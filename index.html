@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#0f1f38" />
+  <meta name="description" content="Gerador local de autorização para retirada de encomendas nos Correios." />
+  <title>Autorização para retirada</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="brandbar" aria-label="Gerador de autorização">
+      <div class="brand-mark" aria-hidden="true">
+        <span></span><span></span>
+      </div>
+      <div>
+        <p class="eyebrow">GERADOR RÁPIDO</p>
+        <h1>Autorização para retirada</h1>
+      </div>
+      <button class="icon-btn" id="settingsButton" type="button" aria-label="Dados salvos" title="Dados salvos">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.25A3.75 3.75 0 1 0 12 15.75 3.75 3.75 0 0 0 12 8.25Zm8.14 4.83a8.54 8.54 0 0 0 .04-1.08c0-.37-.02-.73-.07-1.08l2.05-1.6-2-3.46-2.54 1.03a8.63 8.63 0 0 0-1.87-1.08L15.37 3h-4l-.38 2.71c-.67.28-1.29.64-1.87 1.08L6.58 5.76l-2 3.46 2.05 1.6c-.05.36-.08.75-.08 1.18 0 .38.03.74.08 1.09l-2.05 1.6 2 3.46 2.54-1.03c.58.45 1.2.8 1.87 1.08l.38 2.8h4l.38-2.8a8.64 8.64 0 0 0 1.87-1.08l2.54 1.03 2-3.46-2.02-1.61Z"/></svg>
+      </button>
+    </header>
+
+    <section class="card">
+      <div class="progress" aria-label="Etapas">
+        <button class="progress-step active" data-go-step="1" type="button"><span>1</span><em>No nome de</em></button>
+        <i></i>
+        <button class="progress-step" data-go-step="2" type="button"><span>2</span><em>Vai buscar</em></button>
+        <i></i>
+        <button class="progress-step" data-go-step="3" type="button"><span>3</span><em>Encomenda</em></button>
+      </div>
+
+      <form id="wizardForm" novalidate>
+        <section class="step active" data-step="1" aria-labelledby="step1Title">
+          <div class="step-heading">
+            <p>PASSO 1 DE 3</p>
+            <h2 id="step1Title">Está no nome de quem?</h2>
+            <span>Dados de quem é o destinatário da encomenda.</span>
+          </div>
+
+          <div class="saved-row hidden" id="recipientSavedWrap">
+            <span>Usar salvo</span>
+            <div class="saved-chips" id="recipientSaved"></div>
+          </div>
+
+          <div class="fields">
+            <label class="field field-wide">
+              <span>Nome completo</span>
+              <input id="recipientName" name="recipientName" autocomplete="name" placeholder="Ex.: Simone da Silva" required />
+              <small class="field-error"></small>
+            </label>
+            <label class="field">
+              <span>CPF</span>
+              <input id="recipientCpf" name="recipientCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" required />
+              <small class="field-error"></small>
+            </label>
+            <label class="field">
+              <span>RG <b>opcional</b></span>
+              <input id="recipientRg" name="recipientRg" autocomplete="off" placeholder="Se não tiver, deixe vazio" maxlength="24" />
+              <small class="field-hint">Sem RG, essa parte some do documento.</small>
+            </label>
+          </div>
+
+          <fieldset class="gender-group">
+            <legend>Tratamento no documento</legend>
+            <div class="segmented">
+              <label><input type="radio" name="recipientGender" value="f" checked /><span>Mulher</span></label>
+              <label><input type="radio" name="recipientGender" value="m" /><span>Homem</span></label>
+            </div>
+          </fieldset>
+
+          <div class="actions actions-end">
+            <button class="primary" type="button" data-next="2">Próximo <span>→</span></button>
+          </div>
+        </section>
+
+        <section class="step" data-step="2" aria-labelledby="step2Title">
+          <div class="step-heading">
+            <p>PASSO 2 DE 3</p>
+            <h2 id="step2Title">Quem vai buscar?</h2>
+            <span>Dados da pessoa autorizada a retirar a encomenda.</span>
+          </div>
+
+          <div class="saved-row hidden" id="collectorSavedWrap">
+            <span>Usar salvo</span>
+            <div class="saved-chips" id="collectorSaved"></div>
+          </div>
+
+          <div class="fields">
+            <label class="field field-wide">
+              <span>Nome completo</span>
+              <input id="collectorName" name="collectorName" autocomplete="name" placeholder="Ex.: Erick Luiz Vianna de Brito" required />
+              <small class="field-error"></small>
+            </label>
+            <label class="field">
+              <span>CPF</span>
+              <input id="collectorCpf" name="collectorCpf" inputmode="numeric" autocomplete="off" placeholder="000.000.000-00" maxlength="14" required />
+              <small class="field-error"></small>
+            </label>
+            <label class="field">
+              <span>RG <b>opcional</b></span>
+              <input id="collectorRg" name="collectorRg" autocomplete="off" placeholder="Se não tiver, deixe vazio" maxlength="24" />
+              <small class="field-hint">Sem RG, essa parte some do documento.</small>
+            </label>
+          </div>
+
+          <fieldset class="gender-group">
+            <legend>Tratamento no documento</legend>
+            <div class="segmented">
+              <label><input type="radio" name="collectorGender" value="m" checked /><span>Homem</span></label>
+              <label><input type="radio" name="collectorGender" value="f" /><span>Mulher</span></label>
+            </div>
+          </fieldset>
+
+          <div class="actions">
+            <button class="secondary" type="button" data-back="1">← Voltar</button>
+            <button class="primary" type="button" data-next="3">Próximo <span>→</span></button>
+          </div>
+        </section>
+
+        <section class="step" data-step="3" aria-labelledby="step3Title">
+          <div class="step-heading">
+            <p>PASSO 3 DE 3</p>
+            <h2 id="step3Title">Qual é a encomenda?</h2>
+            <span>Adicione quantos códigos de rastreio precisar.</span>
+          </div>
+
+          <div class="tracking-list" id="trackingList"></div>
+          <button class="add-tracking" id="addTracking" type="button"><span>＋</span> Adicionar outra encomenda</button>
+
+          <label class="field date-field">
+            <span>Data da retirada</span>
+            <input id="pickupDate" name="pickupDate" type="date" required />
+            <small class="field-hint">Já vem preenchida com a data de hoje.</small>
+          </label>
+
+          <div class="preview-card">
+            <div class="preview-top">
+              <div>
+                <p>PRÉVIA DO TEXTO</p>
+                <h3>Assim vai sair no PDF</h3>
+              </div>
+              <span class="a4-chip">A4</span>
+            </div>
+            <p id="previewText"></p>
+            <div class="signature-preview" aria-label="Espaço para assinatura"></div>
+          </div>
+
+          <div class="actions final-actions">
+            <button class="secondary" type="button" data-back="2">← Voltar</button>
+            <button class="primary generate" id="generatePdf" type="submit">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h9l5 5v15H6V2Zm8 1.5V8h4.5L14 3.5ZM9 12v1.7h2.2V19h1.6v-5.3H15V12H9Z"/></svg>
+              Gerar e abrir PDF
+            </button>
+          </div>
+          <p class="privacy-note">Seus dados ficam somente neste aparelho. O site não envia nada para servidor.</p>
+        </section>
+      </form>
+    </section>
+
+    <footer>Feito para gerar a autorização em segundos e imprimir sem ajustes.</footer>
+  </main>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" class="dialog-card">
+      <div class="dialog-header">
+        <div><p>DADOS LOCAIS</p><h2>Pessoas salvas</h2></div>
+        <button class="icon-btn close" value="close" aria-label="Fechar" type="submit">×</button>
+      </div>
+      <p class="dialog-copy">O último destinatário e a última pessoa autorizada ficam preenchidos automaticamente. Você também pode alternar entre pessoas usadas anteriormente.</p>
+      <div class="saved-summary" id="savedSummary"></div>
+      <button id="clearSaved" class="danger" type="button">Apagar todos os dados salvos</button>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="pdf.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
