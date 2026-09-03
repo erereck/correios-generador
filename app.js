@@ -9,7 +9,8 @@
     last: { recipient: null, collector: null },
     tracking: [''],
     date: todayIso(),
-    dateManual: false
+    dateManual: false,
+    draftPeople: { recipient: null, collector: null }
   };
 
   const refs = {
@@ -58,6 +59,8 @@
       state.tracking = Array.isArray(raw.draft?.tracking) && raw.draft.tracking.length ? raw.draft.tracking.slice(0, 20) : [''];
       state.dateManual = Boolean(raw.draft?.dateManual);
       state.date = state.dateManual && raw.draft?.date ? raw.draft.date : todayIso();
+      state.draftPeople.recipient = raw.draft?.recipient || null;
+      state.draftPeople.collector = raw.draft?.collector || null;
     } catch (_) { /* localStorage corrompido: começa limpo */ }
   }
 
@@ -65,7 +68,13 @@
     const data = {
       profiles: state.profiles,
       last: state.last,
-      draft: { tracking: state.tracking, date: state.date, dateManual: state.dateManual }
+      draft: {
+        tracking: state.tracking,
+        date: state.date,
+        dateManual: state.dateManual,
+        recipient: profileFromForm('recipient'),
+        collector: profileFromForm('collector')
+      }
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
@@ -106,6 +115,9 @@
 
   function restoreLastProfiles() {
     ['recipient', 'collector'].forEach(role => {
+      const draft = state.draftPeople[role];
+      const hasDraft = draft && (draft.name || draft.cpf || draft.rg);
+      if (hasDraft) { fillProfile(role, draft); return; }
       const key = state.last[role];
       const profile = state.profiles[role].find(p => onlyDigits(p.cpf) === key) || state.profiles[role][0];
       if (profile) fillProfile(role, profile);
@@ -318,13 +330,13 @@
 
     ['recipientCpf', 'collectorCpf'].forEach(id => {
       const input = $(`#${id}`);
-      input.addEventListener('input', () => { input.value = formatCpf(input.value); setError(input, ''); updatePreview(); });
+      input.addEventListener('input', () => { input.value = formatCpf(input.value); setError(input, ''); saveStore(); updatePreview(); });
     });
 
     ['recipientName', 'recipientRg', 'collectorName', 'collectorRg'].forEach(id => {
-      $(`#${id}`).addEventListener('input', () => { setError($(`#${id}`), ''); updatePreview(); });
+      $(`#${id}`).addEventListener('input', () => { setError($(`#${id}`), ''); saveStore(); updatePreview(); });
     });
-    $$('input[type="radio"]').forEach(input => input.addEventListener('change', updatePreview));
+    $$('input[type="radio"]').forEach(input => input.addEventListener('change', () => { saveStore(); updatePreview(); }));
 
     $('#addTracking').addEventListener('click', () => {
       state.tracking.push('');
@@ -367,6 +379,10 @@
       state.tracking = [''];
       state.date = todayIso();
       state.dateManual = false;
+      state.draftPeople = { recipient: null, collector: null };
+      ['recipientName','recipientCpf','recipientRg','collectorName','collectorCpf','collectorRg'].forEach(id => $(`#${id}`).value = '');
+      $('input[name="recipientGender"][value="f"]').checked = true;
+      $('input[name="collectorGender"][value="m"]').checked = true;
       refs.date.value = state.date;
       renderSaved();
       renderTracking();
